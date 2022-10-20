@@ -29,19 +29,6 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 	return (i);
 }
 
-char	*ft_strdup(const char *s)
-{
-	size_t	len_s;
-	char	*dst;
-
-	len_s = ft_strlen(s);
-	dst = (char *)malloc(sizeof(char) * (len_s + 1));
-	if (dst == NULL)
-		return (NULL);
-	ft_strlcpy(dst, s, len_s + 1);
-	return (dst);
-}
-
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	size_t	len_s1;
@@ -52,9 +39,9 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	if (s1 == NULL && s2 == NULL)
 		return (NULL);
 	if (s1 == NULL)
-		return (ft_strdup(s2));
+		return (ft_substr(s2, 0, ft_strlen(s2)));
 	if (s2 == NULL)
-		return (ft_strdup(s1));
+		return (ft_substr(s1, 0, ft_strlen(s1)));
 	len_s1 = ft_strlen(s1);
 	len_s2 = ft_strlen(s2);
 	total = len_s1 + len_s2;

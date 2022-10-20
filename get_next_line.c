@@ -6,29 +6,28 @@ static bool	is_new_line(char *str)
 
 	if (str == NULL)
 		return (false);
-	i = 0;
-	while (str[i])
+	while (*str)
 	{
-		if (str[i] == LF)
+		if (*str == LF)
 			return (true);
-		i++;
+		str++;
 	}
 	return (false);
 }
 
-static void	*ft_free(char **saved, char *ps, bool free_ps)
+static void	*ft_free(char **saved, char *ps, bool is_free_ps)
 {
 	if (*saved != NULL)
 	{
 		free(*saved);
 		*saved = NULL;
 	}
-	if (free_ps)
+	if (is_free_ps)
 		free(ps);
 	return (NULL);
 }
 
-static char	*read_mode(char **saved, int fd, bool *fin_read)
+static char	*read_mode(char **saved, int fd, bool *finish_read)
 {
 	char	*buf;
 	int		read_size;
@@ -41,7 +40,7 @@ static char	*read_mode(char **saved, int fd, bool *fin_read)
 		return (ft_free(saved, buf, true));
 	buf[read_size] = '\0';
 	if (read_size < BUFFER_SIZE)
-		*fin_read = true;
+		*finish_read = true;
 	return (buf);
 }
 
@@ -76,7 +75,7 @@ static char	*output(char **saved)
 char	*get_next_line(int fd)
 {
 	static char	*saved;
-	bool		fin_read;
+	bool		finish_read;
 	char		*buf;
 	char		*tmp;
 
@@ -87,12 +86,12 @@ char	*get_next_line(int fd)
 		saved = (char *)malloc(sizeof(char) * 1);
 		*saved = '\0';
 	}
-	fin_read = false;
-	while (!fin_read)
+	finish_read = false;
+	while (!finish_read)
 	{
 		if (is_new_line(saved))
 			break ;
-		buf = read_mode(&saved, fd, &fin_read);
+		buf = read_mode(&saved, fd, &finish_read);
 		if (buf == NULL)
 			return (ft_free(&saved, buf, false));
 		tmp = ft_strjoin(saved, buf);
