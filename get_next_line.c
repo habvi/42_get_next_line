@@ -2,8 +2,6 @@
 
 static bool	is_new_line(char *str)
 {
-	size_t	i;
-
 	if (str == NULL)
 		return (false);
 	while (*str)
