@@ -13,29 +13,29 @@ static bool	is_new_line(char *str)
 	return (false);
 }
 
-static void	*ft_free(char **saved, char *ps, bool is_free_ps)
+static void	*ft_free(char **saved, char *ps)
 {
 	if (*saved != NULL)
 	{
 		free(*saved);
 		*saved = NULL;
 	}
-	if (is_free_ps)
+	if (ps != NULL)
 		free(ps);
 	return (NULL);
 }
 
-static char	*read_mode(char **saved, int fd, bool *finish_read)
+static char	*read_buf(char **saved, int fd, bool *finish_read)
 {
 	char	*buf;
-	int		read_size;
+	ssize_t	read_size;
 
 	buf = (char *)malloc(sizeof(char) * ((size_t)BUFFER_SIZE + 1));
 	if (buf == NULL)
 		return (NULL);
 	read_size = read(fd, buf, BUFFER_SIZE);
 	if (read_size == READ_ERROR)
-		return (ft_free(saved, buf, true));
+		return (ft_free(saved, buf));
 	buf[read_size] = '\0';
 	if (read_size < BUFFER_SIZE)
 		*finish_read = true;
@@ -50,21 +50,21 @@ static char	*output(char **saved)
 	char	*tail;
 
 	ps = *saved;
-	if (!ps || *ps == '\0')
-		return (ft_free(saved, NULL, false));
+	if (ps == NULL || *ps == '\0')
+		return (ft_free(saved, NULL));
 	while (*ps && *ps != LF)
 		ps++;
 	left = ft_substr(*saved, 0, ps - *saved + 1);
 	if (left == NULL)
-		return (ft_free(saved, NULL, false));
+		return (ft_free(saved, NULL));
 	if (*left == '\0')
-		return (ft_free(saved, left, true));
+		return (ft_free(saved, left));
 	tail = ps;
 	while (*tail)
 		tail++;
-	right = ft_substr(ps + 1, 0, tail - ps);
+	right = ft_substr(ps + (*ps == LF), 0, tail - ps);
 	if (right == NULL)
-		return (ft_free(saved, left, true));
+		return (ft_free(saved, left));
 	free(*saved);
 	*saved = right;
 	return (left);
@@ -72,28 +72,25 @@ static char	*output(char **saved)
 
 char	*get_next_line(int fd)
 {
-	static char	*saved;
+	static char	*saved = NULL;
 	bool		finish_read;
 	char		*buf;
 	char		*tmp;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || BUFFER_SIZE > INT_MAX)
 		return (NULL);
-	if (saved == NULL)
-	{
-		saved = (char *)malloc(sizeof(char) * 1);
-		*saved = '\0';
-	}
 	finish_read = false;
 	while (!finish_read)
 	{
 		if (is_new_line(saved))
 			break ;
-		buf = read_mode(&saved, fd, &finish_read);
+		buf = read_buf(&saved, fd, &finish_read);
 		if (buf == NULL)
-			return (ft_free(&saved, buf, false));
+			return (ft_free(&saved, NULL));
 		tmp = ft_strjoin(saved, buf);
-		ft_free(&saved, buf, true);
+		ft_free(&saved, buf);
+		if (tmp == NULL)
+			return (NULL);
 		saved = tmp;
 	}
 	return (output(&saved));

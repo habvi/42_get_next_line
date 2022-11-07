@@ -53,6 +53,13 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (res);
 }
 
+static size_t	min(size_t x, size_t y)
+{
+	if (x <= y)
+		return (x);
+	return (y);
+}
+
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	size_t	len_s;
@@ -64,13 +71,13 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		return (NULL);
 	len_s = ft_strlen(s);
 	if (len_s <= start || len == 0)
+	{
+		start = min(len_s, start);
 		len_substr = 0;
+	}
 	else
 	{
-		if (len_s <= start + len)
-			tail = len_s;
-		else
-			tail = start + len;
+		tail = min(len_s, start + len);
 		len_substr = tail - start;
 	}
 	res = (char *)malloc(sizeof(char) * (len_substr + 1));
