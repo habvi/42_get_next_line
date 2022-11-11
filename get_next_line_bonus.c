@@ -46,7 +46,6 @@ static char	*output(char *saved[], int fd)
 {
 	char	*ps;
 	char	*left;
-	char	*right;
 	char	*tail;
 
 	ps = saved[fd];
@@ -54,7 +53,7 @@ static char	*output(char *saved[], int fd)
 		return (ft_free(saved, fd, NULL));
 	while (*ps && *ps != LF)
 		ps++;
-	left = ft_substr(saved[fd], 0, ps - saved[fd] + 1);
+	left = ft_substr_for_gnl(saved[fd], 0, ps - saved[fd] + 1);
 	if (left == NULL)
 		return (ft_free(saved, fd, NULL));
 	if (*left == '\0')
@@ -62,11 +61,9 @@ static char	*output(char *saved[], int fd)
 	tail = ps;
 	while (*tail)
 		tail++;
-	right = ft_substr(ps + (*ps == LF), 0, tail - ps);
-	if (right == NULL)
-		return (ft_free(saved, fd, left));
-	free(saved[fd]);
-	saved[fd] = right;
+	if (*ps == LF)
+		ps++;
+	saved[fd] = ft_memmove_for_gnl(saved[fd], ps, tail - ps + 1);
 	return (left);
 }
 
