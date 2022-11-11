@@ -12,8 +12,7 @@
 char	*get_next_line(int fd);
 
 char	*ft_strjoin(char const *s1, char const *s2);
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
-size_t	ft_strlen(const char *s);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_substr_for_gnl(char const *s, unsigned int start, size_t len);
+void	*ft_memmove_for_gnl(void *dst, const void *src, size_t len);
 
 #endif
