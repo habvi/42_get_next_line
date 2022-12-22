@@ -28,16 +28,16 @@ static void	*ft_free(char *saved[], int fd, char *ps)
 static char	*read_buf(char *saved[], int fd, bool *finish_read)
 {
 	char	*buf;
-	ssize_t	read_size;
+	ssize_t	read_ret;
 
 	buf = (char *)malloc(sizeof(char) * ((size_t)BUFFER_SIZE + 1));
 	if (buf == NULL)
 		return (NULL);
-	read_size = read(fd, buf, BUFFER_SIZE);
-	if (read_size == READ_ERROR)
+	read_ret = read(fd, buf, BUFFER_SIZE);
+	if (read_ret == READ_ERROR)
 		return (ft_free(saved, fd, buf));
-	buf[read_size] = '\0';
-	if (read_size < BUFFER_SIZE)
+	buf[read_ret] = '\0';
+	if (!read_ret)
 		*finish_read = true;
 	return (buf);
 }
@@ -69,12 +69,12 @@ static char	*output(char *saved[], int fd)
 
 char	*get_next_line(int fd)
 {
-	static char	*saved[1025];
+	static char	*saved[MY_OPEN_MAX];
 	bool		finish_read;
 	char		*buf;
 	char		*tmp;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || BUFFER_SIZE > INT_MAX)
+	if (fd < 0 || fd >= MY_OPEN_MAX || BUFFER_SIZE <= 0 || BUFFER_SIZE > INT_MAX)
 		return (NULL);
 	finish_read = false;
 	while (!finish_read)

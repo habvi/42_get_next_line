@@ -6,6 +6,7 @@
 # include <stdbool.h>
 # include <limits.h>
 
+# define MY_OPEN_MAX 1024
 # define LF         '\n'
 # define READ_ERROR -1
 
