@@ -74,7 +74,8 @@ char	*get_next_line(int fd)
 	char		*buf;
 	char		*tmp;
 
-	if (fd < 0 || fd >= MY_OPEN_MAX || BUFFER_SIZE <= 0 || BUFFER_SIZE > INT_MAX)
+	if (fd < 0 || fd >= MY_OPEN_MAX || \
+		BUFFER_SIZE <= 0 || BUFFER_SIZE > INT_MAX)
 		return (NULL);
 	finish_read = false;
 	while (!finish_read)
